@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Log;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -12,7 +11,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-       log::info('********** Register Trigger **********');
     }
 
     /**
@@ -20,6 +18,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        log::info('********** Boot Trigger **********');
     }
 }

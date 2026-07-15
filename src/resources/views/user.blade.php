@@ -1,138 +1,62 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Laravel🌷</title>
-<link rel="icon" href="{{ asset('title.jpeg') }}">
+<x-layouts.app title="Cinnamon Cat | Members">
+    <div class="page-shell list-page" x-data="{ open: false }">
+        <section class="panel-card centered-panel">
+            @if (session('status'))
+                <div class="status-banner">{{ session('status') }}</div>
+            @endif
 
-<style>
-body {
-    font-family: Arial;
-    background: linear-gradient(135deg,#ffe6f0,#e6f7ff);
-    margin: 0;
-    padding: 30px;
-}
+            <div class="panel-header">
+                <div>
+                    <p class="eyebrow">Cinnamon Cat • Members</p>
+                    <h1>Meet the cozy cinnamon crew</h1>
+                    <p class="hero-text">A welcoming list of friends, flowers, and bright little updates.</p>
+                </div>
+                <button type="button" class="primary-btn" @click="open = true">➕ Add a new friend</button>
+            </div>
 
-.container {
-    max-width: 700px;
-    margin: auto;
-    background: white;
-    padding: 25px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-}
-
-h1 {
-    text-align: center;
-    color: #ff6fa5;
-}
-
-.user-card {
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 12px;
-    background: #fff5fa;
-}
-
-button {
-    background: #ff6fa5;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 10px;
-    cursor: pointer;
-}
-
-button:hover {
-    opacity: 0.9;
-}
-
-/* Modal */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.4);
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 20px;
-    width: 300px;
-}
-
-input {
-    width: 100%;
-    padding: 10px;
-    margin: 8px 0;
-    border-radius: 10px;
-    border: 1px solid #ddd;
-}
-</style>
-</head>
-
-<body>
-
-<div class="container">
-
-    <h1>Cinnamon List 🐈🌷</h1>
-
-    <button onclick="openModal()">➕ New Cinnamon 🐈🌷</button>
-    <br> <br>
-    <hr>
-
-    @foreach ($users as $user)
-        <div class="user-card">
-            <strong>{{ $user->name }}</strong><br>
-            <small>{{ $user->email }}</small>
-        </div>
-    @endforeach
-
-</div>
-
-<!-- 🌸 Modal -->
-<div class="modal" id="modal">
-    <div class="modal-content">
-
-        <h3>🌷 Create Cinnamon</h3>
-
-        <form method="POST" action="/users/register">
-            @csrf
-
-            <input type="text" name="name" placeholder="Name" required>
-
-            <input type="email" name="email" placeholder="Email" required>
-
-            <input type="password" name="password" placeholder="Password" required>
-
-            <button type="submit">Create 🐱</button>
-        </form>
-
-        <br>
-
-        <button onclick="closeModal()" style="background:#ccc;color:black;">
-            Cancel
-        </button>
-
+            <div class="user-list">
+                @forelse ($users as $user)
+                    <article class="user-card">
+                        <div class="user-badge">🐱</div>
+                        <div>
+                            <h3>{{ $user->name }}</h3>
+                            <p>{{ $user->email }}</p>
+                        </div>
+                    </article>
+                @empty
+                    <div class="empty-state">
+                        <p>No cinnamon friends yet. Add the first one with the button above.</p>
+                    </div>
+                @endforelse
+            </div>
+        </section>
     </div>
-</div>
 
-<script>
-function openModal() {
-    document.getElementById('modal').style.display = 'flex';
-}
+    <div class="modal" id="modal" x-show="open" x-cloak @click.self="open = false">
+        <div class="modal-content">
+            <h3>🌷 Add a cinnamon friend</h3>
+            <form method="POST" action="{{ route('users.store') }}">
+                @csrf
+                <input type="text" name="name" value="{{ old('name') }}" placeholder="Name" required>
+                @error('name')
+                    <div class="error-message">{{ $message }}</div>
+                @enderror
 
-function closeModal() {
-    document.getElementById('modal').style.display = 'none';
-}
-</script>
+                <input type="email" name="email" value="{{ old('email') }}" placeholder="Email" required>
+                @error('email')
+                    <div class="error-message">{{ $message }}</div>
+                @enderror
 
-@extends('shared.footer')
+                <input type="password" name="password" placeholder="Password" required>
+                @error('password')
+                    <div class="error-message">{{ $message }}</div>
+                @enderror
 
-</body>
-</html>
+                <button type="submit" class="primary-btn form-btn">Create friend</button>
+            </form>
+            <button type="button" class="secondary-btn form-btn" @click="open = false">Cancel</button>
+        </div>
+    </div>
+
+    @include('shared.footer')
+</x-layouts.app>
